@@ -165,7 +165,6 @@ class RpiPWMConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input[CONF_RPI] = self._rpi_version
             user_input[CONF_RPI_MODEL] = self._rpi_board_rev
             user_input[CONF_TYPE] = Platform.FAN
-            user_input[CONF_FREQUENCY] = DEFAULT_FREQ
             return self.async_create_entry(
                 title=title,
                 data=user_input,
@@ -175,21 +174,8 @@ class RpiPWMConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     def _generate_schema_light(self) -> vol.Schema:
-        """Generate schema for fan config."""
-        return self._generate_schema_fan().extend(
-            {
-                vol.Optional(
-                    CONF_FREQUENCY, default=DEFAULT_FREQ
-                ): selector.NumberSelector(
-                    selector.NumberSelectorConfig(
-                        min=CONST_PWM_FREQ_MIN,
-                        max=CONST_PWM_FREQ_MAX,
-                        mode=selector.NumberSelectorMode.BOX,
-                        step=1,
-                    ),
-                ),
-            }
-        )
+        """Generate schema for light config."""
+        return self._generate_schema_fan()
 
     def _generate_schema_fan(self) -> vol.Schema:
         """Generate schema for fan."""
@@ -205,6 +191,16 @@ class RpiPWMConfigFlow(ConfigFlow, domain=DOMAIN):
                 ): selector.SelectSelector(
                     selector.SelectSelectorConfig(
                         options=pin_selector, mode=selector.SelectSelectorMode.DROPDOWN
+                    ),
+                ),
+                vol.Optional(
+                    CONF_FREQUENCY, default=DEFAULT_FREQ
+                ): selector.NumberSelector(
+                    selector.NumberSelectorConfig(
+                        min=CONST_PWM_FREQ_MIN,
+                        max=CONST_PWM_FREQ_MAX,
+                        mode=selector.NumberSelectorMode.BOX,
+                        step=1,
                     ),
                 ),
             }
