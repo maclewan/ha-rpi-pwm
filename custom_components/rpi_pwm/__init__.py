@@ -13,6 +13,7 @@ from rpi_hardware_pwm import HardwarePWM
 from .const import (
     CONF_FREQUENCY,
     CONF_RPI,
+    DEFAULT_FREQ,
     GPIO13,
     GPIO18,
     GPIO19,
@@ -40,7 +41,7 @@ def _make_pwm_device(config: MappingProxyType[str, Any]) -> HardwarePWM:
             channel += 2
     pwm = HardwarePWM(
         pwm_channel=channel,
-        hz=config[CONF_FREQUENCY],
+        hz=config.get(CONF_FREQUENCY, DEFAULT_FREQ),
         chip=chip,
     )
     pwm.start(0)
